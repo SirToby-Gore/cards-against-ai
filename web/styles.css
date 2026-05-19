@@ -225,4 +225,60 @@ body {
   box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.15);
 }
 
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+  }
+  .game-container {
+    flex-direction: column;
+    height: auto;
+  }
+  .game-view {
+    flex-direction: column;
+    height: auto;
+  }
+  .game-view .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #2a2a32;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 1rem;
+    gap: 1rem;
+  }
+  .game-view .sidebar #players-list {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 0.5rem;
+  }
+  .game-view .sidebar #players-list li {
+    padding: 0.5rem 0.75rem;
+    gap: 0.5rem;
+  }
+  .game-view .table-area {
+    padding: 1rem;
+    gap: 1.5rem;
+    overflow-y: visible;
+  }
+  .game-view .table-area .white-cards-zone {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+  }
+  .card {
+    width: 100%;
+    height: 190px;
+    font-size: 0.95rem;
+    padding: 1rem;
+  }
+  .card.white:hover {
+    transform: none;
+  }
+  .card.white.selected {
+    transform: scale(1.02);
+  }
+}
+
 /*# sourceMappingURL=styles.css.map */

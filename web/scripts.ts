@@ -91,7 +91,9 @@ class CardsAgainstAIClient {
 	}
 
 	private connectToServer(): void {
-		this.socket = new WebSocket(`ws://${window.location.host}`);
+		const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+
+		this.socket = new WebSocket(`${protocol}//${window.location.host}`);
 
 		this.socket.onopen = () => {
 			console.info('Pipeline connected directly to the unified server wrapper!');

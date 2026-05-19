@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+
+LOG_FILE="tunnel.log"
+PID_FILE="tunnel.pid"
+
+# 1. Clean up old logs to prevent reading an old URL
+rm -f "$LOG_FILE"
+
+SESSION_NAME="cards"
+
+# Check if the server is already running
+if tmux has-session -t $SESSION_NAME 2>/dev/null; then
+    echo "Server is already running! Use 'tmux attach -t $SESSION_NAME' to see it."
+    
+else
+    echo "Starting Cards server in background session: $SESSION_NAME"
+
+   # Start a new detached tmux session running the jar
+   tmux new-session -d -s $SESSION_NAME "dart run"
+
+   echo "Server started."
+   echo "---------------------------------------------------------------"
+   echo "To view the console, type:  tmux attach -t $SESSION_NAME"
+   echo "To hide the console again, press:  Ctrl+B then D"
+   echo "---------------------------------------------------------------"
+fi
+
+
+echo "---------------------------------------------------"
+echo "Launching Cloudflare Tunnel..."
+echo "---------------------------------------------------"
+
+# 2. Start cloudflared. Using --logfile is more reliable than redirecting stdout.
+nohup cloudflared tunnel --url http://localhost:8080 --logfile "$LOG_FILE" > /dev/null 2>&1 &
+echo $! > "$PID_FILE"
+
+echo -n "Waiting for Cloudflare to generate URL"
+
+# 3. Loop until the URL appears in the log (max 20 seconds)
+MAX_RETRIES=20
+COUNT=0
+TUNNEL_URL=""
+
+while [ $COUNT -lt $MAX_RETRIES ]; do
+    sleep 1
+    echo -n "."
+    # Look for the URL in the log file
+    TUNNEL_URL=$(grep -o 'https://[a-zA-Z0-9.-]*\.trycloudflare.com' "$LOG_FILE" | head -n 1)
+    
+    if [ -n "$TUNNEL_URL" ]; then
+        echo -e "\n\nSuccess!"
+        break
+    fi
+    ((COUNT++))
+done
+
+if [ -n "$TUNNEL_URL" ]; then
+    LOCAL_IP=$(hostname -I | awk '{print $1}')
+    
+    echo "==================================================="
+    echo "Cloudflare URL: $TUNNEL_URL"
+    echo "Local network URL: http://$LOCAL_IP:8080"
+    echo "==================================================="
+    echo
+    echo "Scan below to connect via Local Network (Faster for testing):"
+    qrencode -t ANSI256 "http://$LOCAL_IP:8080"
+    echo
+else
+    echo -e "\n\nError: Timeout reached. Cloudflare failed to generate a URL."
+    echo "Check logs with: cat $LOG_FILE"
+fi
