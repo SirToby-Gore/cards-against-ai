@@ -1,0 +1,274 @@
+// System Palette Configuration variables
+$bg-main: #121214;
+$bg-surface: #1a1a1e;
+$text-light: #f5f5f7;
+$text-dark: #121214;
+$accent-color: #6366f1;
+$accent-hover: #4f46e5;
+$border-color: #2a2a32;
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background-color: $bg-main;
+	color: $text-light;
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+	height: 100vh;
+	overflow: hidden;
+}
+
+.hidden {
+	display: none !important;
+}
+
+// Primary Wrapper Shell Layout
+.game-container {
+	display: flex;
+	width: 100vw;
+	height: 100vh;
+}
+
+// Setup & Entry Screen Styling
+.lobby-view {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	gap: 1.5rem;
+	background: radial-gradient(circle at center, $bg-surface 0%, $bg-main 100%);
+
+	h1 {
+		font-size: 3rem;
+		letter-spacing: -0.05em;
+		font-weight: 800;
+	}
+
+	.input-group {
+		display: flex;
+		gap: 0.5rem;
+		width: 100%;
+		max-width: 400px;
+
+		input {
+			flex: 1;
+			background-color: $bg-main;
+			border: 2px solid $border-color;
+			color: $text-light;
+			padding: 0.75rem 1rem;
+			border-radius: 8px;
+			font-size: 1rem;
+			outline: none;
+			transition: border-color 0.2s;
+
+			&:focus {
+				border-color: $accent-color;
+			}
+		}
+
+		button {
+			background-color: $accent-color;
+			color: $text-light;
+			border: none;
+			padding: 0.75rem 1.5rem;
+			border-radius: 8px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: background-color 0.2s;
+
+			&:hover {
+				background-color: $accent-hover;
+			}
+		}
+	}
+
+	.status-msg {
+		font-size: 0.9rem;
+		height: 1.2rem;
+	}
+}
+
+// Active Match Viewport Layout
+.game-view {
+	display: flex;
+	width: 100%;
+	height: 100%;
+
+	.sidebar {
+		width: 280px;
+		background-color: $bg-surface;
+		border-right: 1px solid $border-color;
+		padding: 1.5rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+
+		h2 {
+			font-size: 1.25rem;
+			text-transform: uppercase;
+			letter-spacing: 0.05em;
+			color: rgba($text-light, 0.6);
+		}
+
+		#players-list {
+			list-style: none;
+			display: flex;
+			flex-direction: column;
+			gap: 0.75rem;
+			flex: 1;
+			overflow-y: auto;
+
+			li {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: 0.75rem 1rem;
+				background-color: $bg-main;
+				border: 1px solid $border-color;
+				border-radius: 8px;
+
+				.player-name {
+					font-weight: 500;
+				}
+
+				.player-score {
+					font-size: 0.85rem;
+					background-color: $border-color;
+					padding: 0.25rem 0.5rem;
+					border-radius: 4px;
+				}
+			}
+		}
+
+		.btn-action {
+			background-color: $accent-color;
+			color: $text-light;
+			border: none;
+			padding: 1rem;
+			border-radius: 8px;
+			font-size: 1rem;
+			font-weight: 700;
+			cursor: pointer;
+			text-transform: uppercase;
+			letter-spacing: 0.02em;
+			transition:
+				transform 0.1s,
+				background-color 0.2s;
+
+			&:hover {
+				background-color: $accent-hover;
+			}
+
+			&:active {
+				transform: scale(0.98);
+			}
+		}
+	}
+
+	.table-area {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		padding: 2rem;
+		gap: 2rem;
+		overflow-y: auto;
+
+		.black-card-zone {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			padding: 1rem 0;
+		}
+
+		.white-cards-zone {
+			flex: 1;
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+			gap: 1.25rem;
+			align-content: start;
+
+			.info-msg {
+				grid-column: 1 / -1;
+				text-align: center;
+				padding: 3rem;
+				color: rgba($text-light, 0.4);
+				font-size: 1.2rem;
+				font-style: italic;
+			}
+		}
+	}
+}
+
+// Card Component Archetypes
+.card {
+	width: 180px;
+	height: 240px;
+	border-radius: 12px;
+	padding: 1.25rem;
+	font-size: 1.05rem;
+	font-weight: 700;
+	line-height: 1.4;
+	word-wrap: break-word;
+	user-select: none;
+	transition:
+		transform 0.2s,
+		box-shadow 0.2s;
+
+	&.black {
+		background-color: $text-dark;
+		color: $text-light;
+		border: 2px solid $border-color;
+		box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+	}
+
+	&.white {
+		background-color: $text-light;
+		color: $text-dark;
+		cursor: pointer;
+		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+		&:hover {
+			transform: translateY(-8px);
+			box-shadow: 0 12px 20px rgba(0, 0, 0, 0.25);
+		}
+
+		&.selected {
+			transform: translateY(-8px) scale(1.02);
+			border: 4px solid $accent-color;
+			box-shadow:
+				0 0 0 2px $bg-main,
+				0 12px 24px rgba($accent-color, 0.3);
+		}
+	}
+}
+
+.card-stack {
+	display: flex;
+	flex-direction: column;
+	cursor: pointer;
+	transition: transform 0.2s ease;
+	padding: 8px;
+	border: 2px solid transparent;
+	border-radius: 8px;
+
+	&:hover {
+		transform: translateY(-5px);
+	}
+
+	&.selected-stack {
+		border-color: #4da6ff;
+		background-color: rgba(77, 166, 255, 0.1);
+	}
+
+	.card.white {
+		.card.white {
+			margin-top: -110px; 
+			box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.15);
+		}
+	}
+}
