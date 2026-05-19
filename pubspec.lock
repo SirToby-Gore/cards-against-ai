@@ -357,10 +357,10 @@ packages:
     dependency: "direct main"
     description:
       name: rich_stdout
-      sha256: "7854cef04b7262cab7e27ebef75529c3bc4e5f64e0fb21f2ca18cf9a2193a687"
+      sha256: "1b7bdb2b75578466054e2aec78e2e5cfb5d2ea0461e131bc6ae513e17b0a0035"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.10"
   scratch_space:
     dependency: transitive
     description:
