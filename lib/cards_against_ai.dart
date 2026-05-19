@@ -276,39 +276,39 @@ class ClientWrapper {
   }
 
   void logSuccess(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}\n';
-    }
-
     terminal.success(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.success(':', newLine: false);
+      terminal.table(data);
+    }
   }
 
   void logInfo(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}\n';
-    }
-
     terminal.info(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.info(':', newLine: false);
+      terminal.table(data);
+    }
   }
 
   void logWarn(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.warning(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.warning(':', newLine: false);
+      terminal.table(data);
+    }
   }
 
   void logError(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.error(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.error(':', newLine: false);
+      terminal.table(data);
+    }
   }
 }
 
@@ -588,34 +588,34 @@ class Server {
   }
 
   void logSuccess(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.success('[Server] $message');
+    if (data != null) {
+      terminal.success(':', newLine: false);
+      terminal.table(data);
+    }
   }
 
   void logInfo(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.info('[Server] $message');
+    if (data != null) {
+      terminal.info(':', newLine: false);
+      terminal.table(data);
+    }
   }
 
   void logWarn(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.warning('[Server] $message');
+    if (data != null) {
+      terminal.warning(':', newLine: false);
+      terminal.table(data);
+    }
   }
 
   void logError(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.error('[Server] $message');
+    if (data != null) {
+      terminal.error(':', newLine: false);
+      terminal.table(data);
+    }
   }
 }
