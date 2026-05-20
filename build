@@ -1,0 +1,1 @@
+dart compile exe bin/cards_against_ai.dart --verbose
