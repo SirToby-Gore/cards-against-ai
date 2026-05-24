@@ -253,10 +253,10 @@ packages:
     dependency: "direct dev"
     description:
       name: lints
-      sha256: cbf8d4b858bb0134ef3ef87841abdf8d63bfc255c266b7bf6b39daa1085c4290
+      sha256: "12f842a479589fea194fe5c5a3095abc7be0c1f2ddfa9a0e76aed1dbd26a87df"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "6.1.0"
   logging:
     dependency: transitive
     description:
@@ -357,10 +357,10 @@ packages:
     dependency: "direct main"
     description:
       name: rich_stdout
-      sha256: "7854cef04b7262cab7e27ebef75529c3bc4e5f64e0fb21f2ca18cf9a2193a687"
+      sha256: f12cdaf512aa90ebd5ea2670bb283e3bf09f0f9a630669d49c5610c7d039447a
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.11"
   scratch_space:
     dependency: transitive
     description:

@@ -73,7 +73,7 @@ class ClientWrapper {
     logSuccess('Connected');
 
     socket.listen((data) {
-      logInfo('Received', data: data);
+      logInfo('Received', data: jsonDecode(data));
       handleIncoming(data);
     }, onDone: () {
       logWarn('Disconnected');
@@ -159,6 +159,11 @@ class ClientWrapper {
         if (manager.clients.length > maximumPlayers) {
           sendToClient('start-game', HttpStatus.badRequest,
               message: "Too many player to start");
+          return;
+        }
+
+        if (manager.isGameInMotion) {
+          logError('Attempted to start game when already in motion');
           return;
         }
 
@@ -273,42 +278,47 @@ class ClientWrapper {
       manager.endGame('Reader left');
     }
     manager.clients.remove(id);
+    manager.numberOfPlayersToSubmit--;
   }
 
   void logSuccess(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}\n';
-    }
-
     terminal.success(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.success(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 
   void logInfo(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}\n';
-    }
-
     terminal.info(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.info(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 
   void logWarn(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.warning(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.warning(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 
   void logError(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.error(
         '[Client ${id.substring(0, 5)}...${id.substring(id.length - 5)}] $message');
+    if (data != null) {
+      terminal.error(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 }
 
@@ -322,6 +332,7 @@ class Server {
   List<BlackCard> blackCards = [];
   bool isGameInMotion = false;
   int currentCardTarget = 100;
+  int numberOfPlayersToSubmit = 0;
 
   void start(bool ansi) async {
     server = await HttpServer.bind(InternetAddress.anyIPv4, 8080);
@@ -346,6 +357,11 @@ class Server {
           String path =
               request.uri.path == '/' ? '/index.html' : request.uri.path;
           File file = File('web$path');
+
+          if (file.path == 'web/reset') {
+            logInfo('Restarting game');
+            endGame('restarting game...');
+          }
 
           logInfo('Request for ${file.path}');
 
@@ -390,7 +406,7 @@ class Server {
     for (var client in clients.values) {
       client.socket.add(message);
     }
-    logInfo('Broadcasted message', data: message);
+    logInfo('Broadcasted message', data: jsonDecode(message));
 
     return true;
   }
@@ -409,7 +425,7 @@ class Server {
     final client = clients[id];
     if (client != null) {
       client.socket.add(message);
-      logInfo('Sent:\n$message\n');
+      logInfo('Sent', data: jsonDecode(message));
       return true;
     } else {
       logError('Does not exist');
@@ -492,10 +508,13 @@ class Server {
         });
       }
 
+      numberOfPlayersToSubmit = clients.length - 1;
+
       while (clients.values
-          .where((client) => client.id != currentReader)
-          .where((client) => client.selected.isEmpty)
-          .isNotEmpty) {
+              .where((client) => client.id != currentReader)
+              .where((client) => client.selected.isNotEmpty)
+              .length <
+          numberOfPlayersToSubmit) {
         await Future.delayed(Duration(milliseconds: 100));
       }
 
@@ -585,37 +604,45 @@ class Server {
 
   void endGame(String message) {
     sendToAll('end-of-game', HttpStatus.internalServerError, message: message);
+    for (var client in clients.values) {
+      client.removeSelf();
+    }
+    isGameInMotion = false;
   }
 
   void logSuccess(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.success('[Server] $message');
+    if (data != null) {
+      terminal.success(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 
   void logInfo(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.info('[Server] $message');
+    if (data != null) {
+      terminal.info(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 
   void logWarn(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.warning('[Server] $message');
+    if (data != null) {
+      terminal.warning(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 
   void logError(String message, {dynamic data}) {
-    if (data != null) {
-      message += ':\n${data.toString()}';
-    }
-
     terminal.error('[Server] $message');
+    if (data != null) {
+      terminal.error(':', newLine: false);
+      terminal.table(data);
+      terminal.print('');
+    }
   }
 }
