@@ -1,0 +1,5 @@
+while :
+do
+  curl "https://lhiwxk0osr.loclx.io/"
+  sleep 10
+done
